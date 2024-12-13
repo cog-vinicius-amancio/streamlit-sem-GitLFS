@@ -8,7 +8,7 @@ import os
 PAGE_URL = 'pages/validation_recs_page/'
 
 def unir_csv(nomes_arquivos_origem, arquivo_destino):
-    if not os.path.exists(arquivo_destino):
+    if not os.path.exists(PAGE_URL+arquivo_destino):
         dfs = [pd.read_csv(PAGE_URL+nome) for nome in nomes_arquivos_origem]
         df_concatenado = pd.concat(dfs, ignore_index=True)
         df_concatenado.to_csv(PAGE_URL+arquivo_destino, index=False)
