@@ -3,19 +3,20 @@ import pandas as pd
 from typing import List
 import json
 import requests as req
-from time import sleep
+import os
+
+PAGE_URL = 'pages/validation_recs_page/'
 
 def unir_csv(nomes_arquivos_origem, arquivo_destino):
-    dfs = [pd.read_csv(nome) for nome in nomes_arquivos_origem]
-    df_concatenado = pd.concat(dfs, ignore_index=True)
-    df_concatenado.to_csv(arquivo_destino, index=False)
+    if not os.path.exists(arquivo_destino):
+        dfs = [pd.read_csv(PAGE_URL+nome) for nome in nomes_arquivos_origem]
+        df_concatenado = pd.concat(dfs, ignore_index=True)
+        df_concatenado.to_csv(PAGE_URL+arquivo_destino, index=False)
 
 arquivos_para_unir = ["parte1.csv", "parte2.csv", "parte3.csv", "parte4.csv"]
 arquivo_unido = "itens_pai_recs.csv"
 
 unir_csv(arquivos_para_unir, arquivo_unido)
-
-PAGE_URL = 'pages/validation_recs_page/'
 
 def string_to_list(string: str) -> List:
     return json.loads(string)
