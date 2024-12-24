@@ -60,6 +60,7 @@ produtos_df.set_index('cd_prod_cor', inplace=True)
 
 itens_pai_df = optimize_dataframe(pd.read_csv(PAGE_URL+'itens_pai_recs.csv'))
 recommendations_dict = itens_pai_df.set_index("cd_prod_cor")["recs"].to_dict()
+itens_pai_df = itens_pai_df.loc[itens_pai_df["IsActive"] == True]
 itens_pai_df = itens_pai_df.drop(columns=["recs","IsActive","IsBrandActive","IsProductActive","tem_imagem?"])
 
 def process_row(row,num_recs):
@@ -162,6 +163,8 @@ def validation_recs():
                 filtered_page_df = filtered_page_df[filtered_page_df[column] == value]
 
         filtered_page_df = filtered_page_df.sort_values('qt_venda_tot',ascending=False)
+
+        filtered_page_df = filtered_page_df[['estoque_ecomm','qt_venda_ecomm','qt_venda_tot','cd_prod_cor','nm_prod','ds_grupo','ds_subgrupo','ds_cor','ds_cor_predominante','ds_modelagem','ds_composicao']]
 
         event = st.dataframe(
             filtered_page_df,
