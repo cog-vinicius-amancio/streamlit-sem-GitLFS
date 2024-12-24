@@ -161,6 +161,8 @@ def validation_recs():
             if value:
                 filtered_page_df = filtered_page_df[filtered_page_df[column] == value]
 
+        filtered_page_df = filtered_page_df.sort_values('qt_venda_tot',ascending=False)
+
         event = st.dataframe(
             filtered_page_df,
             use_container_width=True,
