@@ -164,7 +164,7 @@ def validation_recs():
 
         filtered_page_df = filtered_page_df.sort_values('qt_venda_tot',ascending=False)
 
-        filtered_page_df = filtered_page_df[['estoque_ecomm','qt_venda_ecomm','qt_venda_tot','cd_prod_cor','nm_prod','ds_grupo','ds_subgrupo','ds_cor','ds_cor_predominante','ds_modelagem','ds_composicao']]
+        filtered_page_df = filtered_page_df[['qt_venda_tot','qt_venda_ecomm','estoque_ecomm','cd_prod_cor','nm_prod','ds_grupo','ds_subgrupo','ds_cor','ds_cor_predominante','ds_modelagem','ds_composicao']]
 
         event = st.dataframe(
             filtered_page_df,
