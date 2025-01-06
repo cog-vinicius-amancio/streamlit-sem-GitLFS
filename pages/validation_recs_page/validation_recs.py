@@ -66,6 +66,7 @@ print(itens_pai_df.count())
 recommendations_dict = itens_pai_df.set_index("cd_prod_cor")["recommendations"].to_dict()
 itens_pai_df = itens_pai_df.loc[itens_pai_df["IsActive"] == True]
 itens_pai_df = itens_pai_df.drop(columns=["recommendations","IsActive"])
+itens_pai_df = itens_pai_df.sort_values('qt_venda_tot',ascending=False)
 
 def process_row(row,num_recs):
     cd_prod_cor = row['cd_prod_cor']
@@ -165,8 +166,6 @@ def validation_recs():
         for column, value in filters.items():
             if value:
                 filtered_page_df = filtered_page_df[filtered_page_df[column] == value]
-
-        filtered_page_df = filtered_page_df.sort_values('qt_venda_tot',ascending=False)
 
         filtered_page_df = filtered_page_df[['qt_venda_tot','qt_venda_ecomm','estoque_ecomm','cd_prod_cor','nm_prod','ds_grupo','ds_subgrupo','ds_cor','ds_cor_predominante','ds_modelagem','ds_composicao']]
 
