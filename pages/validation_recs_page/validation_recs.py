@@ -4,19 +4,22 @@ from typing import List
 import json
 import requests as req
 import os
+import gdown
 
-PAGE_URL = 'pages/validation_recs_page/'
+PAGE_PATH = 'pages/validation_recs_page/'
+CSV_NAME = 'itens_pai_recs.csv'
+FILE_ID = '1gVrboNM7VejBQSRz2a3124JjIhbIqqOW'
 
-def unir_csv(nomes_arquivos_origem, arquivo_destino):
-    if not os.path.exists(PAGE_URL+arquivo_destino):
-        dfs = [pd.read_csv(PAGE_URL+nome) for nome in nomes_arquivos_origem]
-        df_concatenado = pd.concat(dfs, ignore_index=True)
-        df_concatenado.to_csv(PAGE_URL+arquivo_destino, index=False)
+def get_csv(csv_name,file_id):
+    if not os.path.exists(PAGE_PATH+csv_name):
+        url = f"https://drive.google.com/uc?id={file_id}"
+        try:
+            gdown.download(url,PAGE_PATH+csv_name,quiet=False)
+            print(f"Arquivo baixado com sucesso: {csv_name}")
+        except Exception as e:
+            print(f"Ocorreu um erro: {e}")
 
-arquivos_para_unir = []
-arquivo_unido = "itens_pai_recs.csv"
-
-unir_csv(arquivos_para_unir, arquivo_unido)
+get_csv(CSV_NAME,FILE_ID)
 
 def string_to_list(string: str) -> List:
     return json.loads(string)
@@ -38,9 +41,9 @@ def optimize_dataframe(df):
     return df
 
 def request_image(product_reference: str):
-    URL = "https://aramisnova.myvtex.com/_v/api/intelligent-search/product_search/?query="
+    url = "https://aramisnova.myvtex.com/_v/api/intelligent-search/product_search/?query="
 
-    response = req.get(URL+product_reference)
+    response = req.get(url+product_reference)
     if response.status_code == 200:
         json_response = response.json()
         if json_response['products'] and json_response['products'][0]['productReference'] == product_reference:
@@ -55,11 +58,11 @@ def request_image(product_reference: str):
 def cached_request_image(product_id):
     return request_image(product_id)
 
-produtos_df = optimize_dataframe(pd.read_csv(PAGE_URL+'produtos_infos.csv'))
+produtos_df = optimize_dataframe(pd.read_csv(PAGE_PATH+'produtos_infos.csv'))
 produtos_df.set_index('cd_prod_cor', inplace=True)
 
-itens_pai_df = optimize_dataframe(pd.read_csv(PAGE_URL+'itens_pai_recs.csv'))
-print(itens_pai_df)
+itens_pai_df = optimize_dataframe(pd.read_csv(PAGE_PATH+CSV_NAME))
+print(itens_pai_df.count())
 recommendations_dict = itens_pai_df.set_index("cd_prod_cor")["recommendations"].to_dict()
 itens_pai_df = itens_pai_df.loc[itens_pai_df["IsActive"] == True]
 itens_pai_df = itens_pai_df.drop(columns=["recommendations","IsActive"])
@@ -174,6 +177,8 @@ def validation_recs():
             hide_index=True,
             selection_mode="multi-row",
         )
+
+        st.write(f"Linhas: {filtered_page_df.count()}")
 
         st.write("### Produtos selecionados:")
         selected_rows = event.selection.rows
