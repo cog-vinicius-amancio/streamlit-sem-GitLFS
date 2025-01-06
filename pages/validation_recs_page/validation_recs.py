@@ -178,8 +178,6 @@ def validation_recs():
             selection_mode="multi-row",
         )
 
-        st.write(f"Linhas: {filtered_page_df.count()}")
-
         st.write("### Produtos selecionados:")
         selected_rows = event.selection.rows
         page_selected_rows_df = filtered_page_df.iloc[selected_rows]
