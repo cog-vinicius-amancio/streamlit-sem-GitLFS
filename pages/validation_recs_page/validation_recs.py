@@ -13,7 +13,7 @@ def unir_csv(nomes_arquivos_origem, arquivo_destino):
         df_concatenado = pd.concat(dfs, ignore_index=True)
         df_concatenado.to_csv(PAGE_URL+arquivo_destino, index=False)
 
-arquivos_para_unir = ["parte1.csv", "parte2.csv", "parte3.csv", "parte4.csv"]
+arquivos_para_unir = []
 arquivo_unido = "itens_pai_recs.csv"
 
 unir_csv(arquivos_para_unir, arquivo_unido)
@@ -59,9 +59,10 @@ produtos_df = optimize_dataframe(pd.read_csv(PAGE_URL+'produtos_infos.csv'))
 produtos_df.set_index('cd_prod_cor', inplace=True)
 
 itens_pai_df = optimize_dataframe(pd.read_csv(PAGE_URL+'itens_pai_recs.csv'))
-recommendations_dict = itens_pai_df.set_index("cd_prod_cor")["recs"].to_dict()
+print(itens_pai_df)
+recommendations_dict = itens_pai_df.set_index("cd_prod_cor")["recommendations"].to_dict()
 itens_pai_df = itens_pai_df.loc[itens_pai_df["IsActive"] == True]
-itens_pai_df = itens_pai_df.drop(columns=["recs","IsActive","IsBrandActive","IsProductActive","tem_imagem?"])
+itens_pai_df = itens_pai_df.drop(columns=["recommendations","IsActive"])
 
 def process_row(row,num_recs):
     cd_prod_cor = row['cd_prod_cor']
